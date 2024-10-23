@@ -2,22 +2,36 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package com.mycompany.proyecto;
+ package com.mycompany.proyecto;
+
+import javax.swing.JOptionPane;
+import javax.swing.JFileChooser;
 
 /**
  *
  * @author nincy
  */
-public class Interfaz extends javax.swing.JFrame {
+    public class Interfaz extends javax.swing.JFrame {
  
-   
+    private String rutaSeleccionada;
+    
+    
+    public void setRutaseleccionada(String ruta) {
+        this.rutaSeleccionada = ruta;}
     /**
      * Creates new form Interfaz
      */
+    public Interfaz(String ruta) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.rutaSeleccionada=Ruta.getRutaSeleccionada();
+    }
     public Interfaz() {
         initComponents();
         this.setLocationRelativeTo(null);
     }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -162,9 +176,15 @@ public class Interfaz extends javax.swing.JFrame {
     }//GEN-LAST:event_musicaActionPerformed
 
     private void analisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analisisActionPerformed
-        Analisis b =new Analisis();
-        b.setVisible(true);
-        this.setVisible(false);
+        if (rutaSeleccionada != null && !rutaSeleccionada.isEmpty()) {
+            Analisis b = new Analisis(rutaSeleccionada); 
+            b.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione una ruta");
+          
+        }
+    
     }//GEN-LAST:event_analisisActionPerformed
 
     private void videoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_videoActionPerformed
@@ -179,6 +199,7 @@ public class Interfaz extends javax.swing.JFrame {
         this.setVisible(false);
     }//GEN-LAST:event_imagenesActionPerformed
 
+    
     /**
      * @param args the command line arguments
      */

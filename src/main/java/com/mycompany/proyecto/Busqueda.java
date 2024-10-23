@@ -20,7 +20,8 @@ public class Busqueda extends javax.swing.JFrame {
      */
     public Busqueda() {
         initComponents();
-           this.setLocationRelativeTo(null);
+        this.setLocationRelativeTo(null);
+        
     }
 
     /**
@@ -100,25 +101,27 @@ public class Busqueda extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
            JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY); // Para seleccionar carpetas, no archivos
+    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);   
 
     int resultado = fileChooser.showOpenDialog(this);
 
     if (resultado == JFileChooser.APPROVE_OPTION) {
-        // Obtener la carpeta seleccionada
-        File carpetaseleccionada = fileChooser.getSelectedFile();
-        // Mostrar la ruta seleccionada en el JLabel
-        JOptionPane.showMessageDialog(null, "Ruta Seleccionada");
-    
-       String Rutaseleccionada = carpetaseleccionada.getAbsolutePath();
-       
-       Musica ab= new Musica();
-       ab.setRutaseleccionada(Rutaseleccionada);
-       ab.setVisible(true);
-       this.setVisible(false);
-               
-    }
+        File carpetaSeleccionada = fileChooser.getSelectedFile();
         
+        String rutaSeleccionada = carpetaSeleccionada.getAbsolutePath();
+        
+        Ruta.setRutaSeleccionada(rutaSeleccionada);
+        
+        JOptionPane.showMessageDialog(null, "Ruta seleccionada.");
+        
+        Interfaz a = new Interfaz(rutaSeleccionada); 
+        a.setVisible(true);
+        this.dispose();
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Seleccione una carpeta válida.");
+        }
+    
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

@@ -13,14 +13,111 @@ import javax.swing.JOptionPane;
  */
 public class Analisis extends javax.swing.JFrame {
 
+    private String rutaSeleccionada;
    
     /**
      * Creates new form Analisis
      */
-    public Analisis() {
+    public Analisis(String ruta) {
         initComponents();
         this.setLocationRelativeTo(null);
+        this.rutaSeleccionada=ruta;
+       
+        double tamcarpeta = calculartamcarpeta(new File(rutaSeleccionada));
+        double tamcarpetaGB = (double) tamcarpeta / (1024 * 1024 * 1024);  
+        jLabel11.setText(String.format ("%.2f GB Utilizados",+tamcarpetaGB));
+        
+        double tammusica = calculartammusica(new File(rutaSeleccionada));
+        double tammusicaGB = tammusica / (1024 * 1024 * 1024); 
+        jLabel3.setText(String.format("%.2f GB Utilizados", tammusicaGB));
+        
+        double tamvideo = calculartamvideo(new File(rutaSeleccionada));
+        double tamvideoGB = tamvideo / (1024 * 1024 * 1024);
+        jLabel12.setText(String.format("%.2f GB Utilizados", tamvideoGB));
+   
+        double tamImagenes = calcularTamImagenes(new File(rutaSeleccionada));
+        double tamImagenesGB = tamImagenes / (1024 * 1024 * 1024);  
+        jLabel13.setText(String.format("%.2f GB Utilizados", tamImagenesGB));
     }
+    
+    public final double calculartamcarpeta(File carpeta) {
+        double tam = 0;
+
+        if (carpeta.isDirectory()) {
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    tam += calculartamcarpeta(archivo); 
+                }
+            }
+        } else {
+            tam = carpeta.length(); 
+        }
+
+        return tam;
+    }
+    
+     public double calculartammusica(File carpeta) {
+        double tammusica = 0;
+
+        if (carpeta.isDirectory()) {
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    tammusica += calculartammusica(archivo);  
+                }
+            }
+        } else {
+          
+            String nombreArchivo = carpeta.getName().toLowerCase();
+            if (nombreArchivo.endsWith(".mp3") || nombreArchivo.endsWith(".wav")) {
+                tammusica = carpeta.length();
+            }
+        }
+
+        return tammusica;
+    }
+     
+     public double calculartamvideo(File carpeta) {
+        double tamvideo = 0;
+
+        if (carpeta.isDirectory()) {
+            File[] archivos = carpeta.listFiles();
+            if (archivos != null) {
+                for (File archivo : archivos) {
+                    tamvideo += calculartamvideo(archivo);  
+                }
+            }
+        } else {
+            String nombreArchivo = carpeta.getName().toLowerCase();
+            if (nombreArchivo.endsWith(".mp4") || nombreArchivo.endsWith(".avi")) {
+                tamvideo = carpeta.length();
+            }
+        }
+
+        return tamvideo;
+    }
+     
+     public double calcularTamImagenes(File carpeta) {
+    double tamImagenes = 0;
+
+    if (carpeta.isDirectory()) {
+        File[] archivos = carpeta.listFiles();
+        if (archivos != null) {
+            for (File archivo : archivos) {
+                tamImagenes += calcularTamImagenes(archivo);  
+            }
+        }
+    } else {
+        
+        String nombreArchivo = carpeta.getName().toLowerCase();
+        if (nombreArchivo.endsWith(".jpg") || nombreArchivo.endsWith(".png") || nombreArchivo.endsWith(".jpeg") || nombreArchivo.endsWith(".tiff")) {
+            tamImagenes = carpeta.length();
+        }
+    }
+
+    return tamImagenes;
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,6 +135,9 @@ public class Analisis extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
@@ -65,29 +165,38 @@ public class Analisis extends javax.swing.JFrame {
         jLabel5.setText("Video");
 
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("GB Utilizados");
+        jLabel3.setText("Musica");
 
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
         jLabel6.setText("Musica");
+
+        jLabel11.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel11.setText("total");
+
+        jLabel12.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel12.setText("video");
+
+        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel13.setText("imagenes");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel3)
-                        .addGap(33, 33, 33))))
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE))
+                .addGap(77, 77, 77))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -98,14 +207,23 @@ public class Analisis extends javax.swing.JFrame {
                         .addComponent(jLabel2))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(29, 29, 29)
-                        .addComponent(jLabel3)))
+                        .addComponent(jLabel11)))
                 .addGap(18, 18, 18)
-                .addComponent(jLabel6)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel4)
-                .addGap(27, 27, 27))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(24, 24, 24))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel12)
+                        .addGap(18, 18, 18)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel13))
+                .addGap(12, 12, 12))
         );
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
@@ -241,19 +359,19 @@ public class Analisis extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void inicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inicioActionPerformed
-        Interfaz a= new Interfaz();
+        Interfaz a = new Interfaz();
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_inicioActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Archidupli b= new Archidupli();
+        Archidupli b= new Archidupli(rutaSeleccionada);
         b.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Archigrandes c= new Archigrandes();
+        Archigrandes c= new Archigrandes(rutaSeleccionada);
         c.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -291,7 +409,12 @@ public class Analisis extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Analisis().setVisible(true);
+               String ruta = Ruta.getRutaSeleccionada();
+                if (ruta != null) {
+                    new Analisis(ruta).setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(null, "No se ha seleccionado una carpeta.");
+                }
             }
         });
     }
@@ -302,6 +425,9 @@ public class Analisis extends javax.swing.JFrame {
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

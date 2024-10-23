@@ -4,12 +4,21 @@
  */
 package com.mycompany.proyecto;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author nincy
  */
 public class Archidupli extends javax.swing.JFrame {
+    
+     private String rutaSeleccionada;
 
+    public Archidupli(String ruta) {
+        this.rutaSeleccionada = ruta;
+        initComponents();
+        this.setLocationRelativeTo(null);
+    }
     /**
      * Creates new form Archidupli
      */
@@ -119,9 +128,15 @@ public class Archidupli extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Analisis a = new Analisis();
-        a.setVisible(true);
-        this.setVisible(false);
+        String ruta = Ruta.getRutaSeleccionada();
+        if (ruta != null) {
+            Analisis a = new Analisis(ruta);  
+            a.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado una carpeta.");
+        }
+       
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
