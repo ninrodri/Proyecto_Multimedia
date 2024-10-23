@@ -14,5 +14,6 @@ public class Proyecto {
         
         Busqueda a= new Busqueda();
         a.show();
+        
     }
 }
