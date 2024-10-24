@@ -4,6 +4,14 @@
  */
 package com.mycompany.proyecto;
 
+
+import java.util.List;
+import java.io.File;
+import java.util.ArrayList;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author nincy
@@ -18,6 +26,7 @@ public class Archigrandes extends javax.swing.JFrame {
         initComponents();
         this.rutaSeleccionada= ruta;
         this.setLocationRelativeTo(null);
+        mostrarArchigrandes();
     }
     public Archigrandes() {
         initComponents();
@@ -39,11 +48,23 @@ public class Archigrandes extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         Eliminar.setText("Eliminar");
+        Eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(Eliminar);
 
         Mover.setText("Mover");
+        Mover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MoverActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(Mover);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -85,17 +106,36 @@ public class Archigrandes extends javax.swing.JFrame {
         );
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
-        jPanel2.setComponentPopupMenu(jPopupMenu1);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Nombre", "Tamaño", "Ruta"
+            }
+        ));
+        jTable1.setComponentPopupMenu(jPopupMenu1);
+        jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 316, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -122,12 +162,129 @@ public class Archigrandes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
+    
+     private void mostrarArchigrandes() {
+        
+        List<File> archigrandes = buscararchigrandes(new File(rutaSeleccionada));
+
+     
+        DefaultTableModel modelGrandes = (DefaultTableModel) jTable1.getModel();
+        modelGrandes.setRowCount(0); 
+
+        
+        int contador = 0;
+        for (File archivo : archigrandes) {
+            if (contador >= 10) break; 
+            String nombreArchivo = archivo.getName();
+            String rutaArchivo = archivo.getAbsolutePath();
+            String tamanoArchivo = String.format("%.2f MB", (double) archivo.length() / (1024 * 1024));
+
+            
+            modelGrandes.addRow(new Object[]{nombreArchivo, tamanoArchivo, rutaArchivo});
+            contador++;}
+                      }
+     
+        public List<File> buscararchigrandes(File carpeta) {
+        List<File> archivosGrandes = new ArrayList<>();
+        File[] archivos = carpeta.listFiles();
+        if (archivos != null) {
+            for (File archivo : archivos) {
+                if (archivo.isFile()) {
+                    archivosGrandes.add(archivo);}
+            }
+        }
+        
+         for (int i = 0; i < archivosGrandes.size() - 1; i++) {
+        for (int j = 0; j < archivosGrandes.size() - 1 - i; j++) {
+            
+            if (archivosGrandes.get(j).length() < archivosGrandes.get(j + 1).length()) {
+     
+                File temp = archivosGrandes.get(j);
+                archivosGrandes.set(j, archivosGrandes.get(j + 1));
+                archivosGrandes.set(j + 1, temp);}
+        }
+    }
+
+    return archivosGrandes; 
+}
+
+       private void eliminarArchivo() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 2); 
+            File archivo = new File(rutaArchivo);
+            
+             if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "El archivo no existe.");
+                return;
+            }
+
+            int confirmacion = JOptionPane.showConfirmDialog(this, "Quieres eliminar el archivo", "", JOptionPane.YES_NO_OPTION);
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                if (archivo.delete()) {
+                    JOptionPane.showMessageDialog(this, "Archivo eliminado");
+                    ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Ha ocurrido un error");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningun archivo");
+        }
+    }
+
+   
+    private void moverArchivo() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 2);
+            File archivo = new File(rutaArchivo);
+            
+              if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "No hay archivo");
+                return;
+            }
+
+          
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int seleccion = fileChooser.showOpenDialog(this);
+
+            if (seleccion == JFileChooser.APPROVE_OPTION) {
+                File carpetaDestino = fileChooser.getSelectedFile(); 
+                File archivoDestino = new File(carpetaDestino, archivo.getName());
+
+               if (archivo.renameTo(archivoDestino)) { 
+                    JOptionPane.showMessageDialog(this, "Archivo movido");
+                    ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada); 
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se puedo mover el arhcivo");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No hay archivo");
+        }
+    }
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Analisis a= new Analisis(rutaSeleccionada);
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void MoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoverActionPerformed
+        moverArchivo();
+    }//GEN-LAST:event_MoverActionPerformed
+
+    private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
+        eliminarArchivo();
+    }//GEN-LAST:event_EliminarActionPerformed
+
+    
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -171,5 +328,7 @@ public class Archigrandes extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
