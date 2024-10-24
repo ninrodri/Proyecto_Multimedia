@@ -5,6 +5,11 @@
 package com.mycompany.proyecto;
 
 import javax.swing.JOptionPane;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFileChooser;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,6 +23,7 @@ public class Archidupli extends javax.swing.JFrame {
         this.rutaSeleccionada = ruta;
         initComponents();
         this.setLocationRelativeTo(null);
+        mostrarArchivosDuplicados();
     }
     /**
      * Creates new form Archidupli
@@ -43,15 +49,26 @@ public class Archidupli extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         Eliminar.setText("Eliminar");
+        Eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                EliminarActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(Eliminar);
 
         Mover.setText("Mover");
+        Mover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MoverActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(Mover);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(400, 400));
 
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
 
@@ -72,15 +89,34 @@ public class Archidupli extends javax.swing.JFrame {
         jPanel2.setInheritsPopupMenu(true);
         jPanel2.setPreferredSize(new java.awt.Dimension(0, 375));
 
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Nombre", "Tamaño", "Ruta"
+            }
+        ));
+        jTable1.setComponentPopupMenu(jPopupMenu1);
+        jScrollPane1.setViewportView(jTable1);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 307, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(18, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -127,6 +163,65 @@ public class Archidupli extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+         private void mostrarArchivosDuplicados() {
+        List<File[]> archivosDuplicados = buscarArchivosDuplicados(new File(rutaSeleccionada));
+
+        
+        DefaultTableModel modelDuplicados = (DefaultTableModel) jTable1.getModel();
+        modelDuplicados.setRowCount(0); // Limpiar filas existentes 
+
+        // Añadir todos los archivos duplicados al JTable
+        int contador=0;
+        for (File[] parDuplicado : archivosDuplicados) {
+            if (contador>=10)break;
+            String nombreArchivo1 = parDuplicado[0].getName();
+            String rutaArchivo1 = parDuplicado[0].getAbsolutePath();
+            String tamanoArchivo1 = String.format("%.2f MB", (double) parDuplicado[0].length() / (1024 * 1024));
+
+            String nombreArchivo2 = parDuplicado[1].getName();
+            String rutaArchivo2 = parDuplicado[1].getAbsolutePath();
+            String tamanoArchivo2 = String.format("%.2f MB", (double) parDuplicado[1].length() / (1024 * 1024));
+
+            // Añadir ambos archivos a la tabla de duplicados
+            modelDuplicados.addRow(new Object[]{nombreArchivo1, tamanoArchivo1, rutaArchivo1});
+            contador++;
+            if (contador>=10)break;
+            
+            modelDuplicados.addRow(new Object[]{nombreArchivo2, tamanoArchivo2, rutaArchivo2});
+
+            contador++;
+        }
+    }
+
+    // Método para buscar archivos duplicados (mismo tamaño y extensión)
+    public List<File[]> buscarArchivosDuplicados(File carpeta) {
+        List<File[]> duplicados = new ArrayList<>(); 
+        File[] archivos = carpeta.listFiles(); 
+
+        // Recorrer todos los archivos en la carpeta
+        if (archivos != null) {
+            for (int i = 0; i < archivos.length; i++) {
+                for (int j = i + 1; j < archivos.length; j++) {
+                    
+                    if (archivos[i].length() == archivos[j].length() && obtenerExtension(archivos[i]).equals(obtenerExtension(archivos[j]))) {
+                        duplicados.add(new File[]{archivos[i], archivos[j]});
+                    }
+                }
+            }
+        }
+        return duplicados;
+    }
+
+    // Método auxiliar para obtener la extensión del archivo
+    public String obtenerExtension(File archivo) {
+        String nombre = archivo.getName();
+        int indicePunto = nombre.lastIndexOf('.');
+        if (indicePunto > 0 && indicePunto < nombre.length() - 1) {
+            return nombre.substring(indicePunto + 1).toLowerCase(); // Devuelve la extensión en minúsculas
+        }
+        return ""; 
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String ruta = Ruta.getRutaSeleccionada();
         if (ruta != null) {
@@ -134,11 +229,77 @@ public class Archidupli extends javax.swing.JFrame {
             a.setVisible(true);
             this.setVisible(false);
         } else {
-            JOptionPane.showMessageDialog(this, "No se ha seleccionado una carpeta.");
+            JOptionPane.showMessageDialog(this, "No ha seleccionado ninguna carpeta");
         }
        
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void EliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EliminarActionPerformed
+        eliminarArchivo();
+    }//GEN-LAST:event_EliminarActionPerformed
+
+    private void MoverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MoverActionPerformed
+        moverArchivo();
+    }//GEN-LAST:event_MoverActionPerformed
+
+     private void eliminarArchivo() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 2); 
+            File archivo = new File(rutaArchivo);
+            
+             if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+                return;
+            }
+
+            int confirmacion = JOptionPane.showConfirmDialog(this, "Desea eliminar el archivo", "", JOptionPane.YES_NO_OPTION);
+            if (confirmacion == JOptionPane.YES_OPTION) {
+                if (archivo.delete()) {
+                    JOptionPane.showMessageDialog(this, "Archivo eliminado");
+                    ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada); // Eliminar la fila del JTable
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo eliminar el archivo");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No hay archivo");
+        }
+    }
+
+  
+    private void moverArchivo() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 2); // Obtener la ruta del archivo
+            File archivo = new File(rutaArchivo);
+            
+              if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+                return;
+            }
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int seleccion = fileChooser.showOpenDialog(this);
+
+            if (seleccion == JFileChooser.APPROVE_OPTION) {
+                File carpetaDestino = fileChooser.getSelectedFile(); 
+                File archivoDestino = new File(carpetaDestino, archivo.getName());
+
+               if (archivo.renameTo(archivoDestino)) { 
+                    JOptionPane.showMessageDialog(this, "Archivo movido");
+                    ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada); // Eliminar la fila del JTable
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo mover el archivo");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningún archivo.");
+        }
+    }
+
+    
     /**
      * @param args the command line arguments
      */
@@ -180,5 +341,7 @@ public class Archidupli extends javax.swing.JFrame {
     public javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
 }
