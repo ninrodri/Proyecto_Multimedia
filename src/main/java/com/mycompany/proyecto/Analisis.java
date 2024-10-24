@@ -5,7 +5,10 @@
 package com.mycompany.proyecto;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -38,7 +41,110 @@ public class Analisis extends javax.swing.JFrame {
         double tamImagenes = calcularTamImagenes(new File(rutaSeleccionada));
         double tamImagenesGB = tamImagenes / (1024 * 1024 * 1024);  
         jLabel13.setText(String.format("%.2f GB Utilizados", tamImagenesGB));
+    
+                List<File[]> archivosDuplicados = buscarArchivosDuplicados(new File(rutaSeleccionada));
+
+        // Crear el modelo de la tabla
+        DefaultTableModel modelDuplicados = (DefaultTableModel) jTable3.getModel();
+        modelDuplicados.setRowCount(0); // Limpiar filas existentes (si es necesario)
+
+        // Añadir los archivos duplicados al JTable
+        for (File[] parDuplicado : archivosDuplicados) {
+            String nombreArchivo1 = parDuplicado[0].getName();
+            String rutaArchivo1 = parDuplicado[0].getAbsolutePath();
+            String tamanoArchivo1 = String.format("%.2f MB", (double) parDuplicado[0].length() / (1024 * 1024));
+
+            String nombreArchivo2 = parDuplicado[1].getName();
+            String rutaArchivo2 = parDuplicado[1].getAbsolutePath();
+            String tamanoArchivo2 = String.format("%.2f MB", (double) parDuplicado[1].length() / (1024 * 1024));
+
+            // Añadir ambos archivos a la tabla
+            modelDuplicados.addRow(new Object[]{nombreArchivo1, tamanoArchivo1, rutaArchivo1});
+            modelDuplicados.addRow(new Object[]{nombreArchivo2, tamanoArchivo2, rutaArchivo2});
+        }
+        
+        List<File> archivosMasPesados = buscarArchivosMasPesados(new File(rutaSeleccionada));
+        DefaultTableModel modelPesados = (DefaultTableModel) jTable2.getModel();
+        modelPesados.setRowCount(0); // Limpiar filas existentes
+
+        for (File archivo : archivosMasPesados) {
+            String nombreArchivo = archivo.getName();
+            String rutaArchivo = archivo.getAbsolutePath();
+            String tamanoArchivo = String.format("%.2f MB", (double) archivo.length() / (1024 * 1024));
+
+            // Añadir el archivo a la tabla de archivos pesados
+            modelPesados.addRow(new Object[]{nombreArchivo, tamanoArchivo, rutaArchivo});
+        }
     }
+          
+
+    // Definir el método buscarArchivosDuplicados
+    public List<File[]> buscarArchivosDuplicados(File carpeta) {
+        List<File[]> duplicados = new ArrayList<>(); // Lista para guardar pares de archivos duplicados
+        File[] archivos = carpeta.listFiles(); // Lista de archivos en la carpeta
+
+        // Recorrer todos los archivos en la carpeta
+        if (archivos != null) {
+            for (int i = 0; i < archivos.length; i++) {
+                for (int j = i + 1; j < archivos.length; j++) {
+                    // Si los tamaños de dos archivos son iguales, los consideramos duplicados
+                    if (archivos[i].length() == archivos[j].length() && obtenerExtension(archivos[i]).equals(obtenerExtension(archivos[j]))) {
+                        duplicados.add(new File[]{archivos[i], archivos[j]});
+                        if (duplicados.size() == 1) {
+                            return duplicados;
+                    }
+                    
+                    }
+                }
+            }
+        }
+        return duplicados;
+    }
+    
+    public String obtenerExtension(File archivo) {
+        String nombre = archivo.getName();
+        int indicePunto = nombre.lastIndexOf('.');
+        if (indicePunto > 0 && indicePunto < nombre.length() - 1) {
+            return nombre.substring(indicePunto + 1).toLowerCase(); 
+        }
+        return "";
+    }
+
+    
+    public List<File> buscarArchivosMasPesados(File carpeta) {
+        List<File> archivosMasPesados = new ArrayList<>(); 
+        File[] archivos = carpeta.listFiles(); // Lista de archivos en la carpeta
+
+        
+        File archivoMasPesado1 = null;
+        File archivoMasPesado2 = null;
+
+        // Recorrer todos los archivos en la carpeta
+        if (archivos != null) {
+            for (File archivo : archivos) {
+                if (archivo.isFile()) {
+                   
+                    if (archivoMasPesado1 == null || archivo.length() > archivoMasPesado1.length()) {
+                        archivoMasPesado2 = archivoMasPesado1; 
+                        archivoMasPesado1 = archivo; 
+                    } else if (archivoMasPesado2 == null || archivo.length() > archivoMasPesado2.length()) {
+                        archivoMasPesado2 = archivo; 
+                    }
+                }
+            }
+        }
+
+    
+        if (archivoMasPesado1 != null) {
+            archivosMasPesados.add(archivoMasPesado1);
+        }
+        if (archivoMasPesado2 != null) {
+            archivosMasPesados.add(archivoMasPesado2);
+        }
+
+        return archivosMasPesados;
+    }
+    
     
     public final double calculartamcarpeta(File carpeta) {
         double tam = 0;
@@ -118,7 +224,7 @@ public class Analisis extends javax.swing.JFrame {
 
     return tamImagenes;
 }
-
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -142,10 +248,14 @@ public class Analisis extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable3 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         inicio = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -242,18 +352,36 @@ public class Analisis extends javax.swing.JFrame {
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setText("Archivos Duplicados");
 
+        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Nombre ", "Tamaño", "Ruta"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable3);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addGap(15, 15, 15))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(41, 41, 41)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2)
+                        .addGap(15, 15, 15))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -263,7 +391,9 @@ public class Analisis extends javax.swing.JFrame {
                     .addComponent(jLabel8)
                     .addComponent(jButton2)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(25, 25, 25))
         );
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
@@ -282,6 +412,19 @@ public class Analisis extends javax.swing.JFrame {
             }
         });
 
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null},
+                {null, null, null},
+                {null, null, null},
+                {null, null, null}
+            },
+            new String [] {
+                "Nombre ", "Tamaño", "Ruta"
+            }
+        ));
+        jScrollPane3.setViewportView(jTable2);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -294,6 +437,9 @@ public class Analisis extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton3)
                 .addGap(20, 20, 20))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,7 +450,9 @@ public class Analisis extends javax.swing.JFrame {
                         .addComponent(jLabel9)
                         .addComponent(jLabel10))
                     .addComponent(jButton3))
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
         );
 
         jPanel4.setBackground(new java.awt.Color(51, 51, 51));
@@ -350,7 +498,7 @@ public class Analisis extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -440,5 +588,9 @@ public class Analisis extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTable jTable2;
+    private javax.swing.JTable jTable3;
     // End of variables declaration//GEN-END:variables
 }
