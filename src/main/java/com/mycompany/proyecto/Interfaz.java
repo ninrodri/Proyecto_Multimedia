@@ -170,9 +170,13 @@ import javax.swing.JFileChooser;
     }// </editor-fold>//GEN-END:initComponents
 
     private void musicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_musicaActionPerformed
-        Musica a = new Musica();
+        if(rutaSeleccionada != null && !rutaSeleccionada.isEmpty()){
+        Musica a = new Musica(rutaSeleccionada);
         a.setVisible(true);
         this.setVisible(false);
+}else {
+      JOptionPane.showMessageDialog(null, "Seleccione una ruta");
+}
     }//GEN-LAST:event_musicaActionPerformed
 
     private void analisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analisisActionPerformed
