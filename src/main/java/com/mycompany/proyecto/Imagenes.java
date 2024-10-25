@@ -4,19 +4,35 @@
  */
 package com.mycompany.proyecto;
 
+import java.awt.Image;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.ImageIcon;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author nincy
  */
 public class Imagenes extends javax.swing.JFrame {
 
+    private String rutaSeleccionada;
     /**
      * Creates new form Imagenes
      */
+    public Imagenes(String ruta) {
+        initComponents();
+        this.setLocationRelativeTo(null);
+        this.rutaSeleccionada= ruta;
+        mostrarimagen();
+    }
+    
     public Imagenes() {
         initComponents();
         this.setLocationRelativeTo(null);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -38,6 +54,9 @@ public class Imagenes extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
 
         mover.setText("Mover");
         jPopupMenu1.add(mover);
@@ -123,15 +142,40 @@ public class Imagenes extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
         jPanel3.setComponentPopupMenu(jPopupMenu1);
 
+        jLabel2.setText("Imagenes");
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "Nombre", "Ruta"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 275, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -140,7 +184,7 @@ public class Imagenes extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -155,8 +199,75 @@ public class Imagenes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void mostrarimagen(){
+    
+    List<File> archivosImagen = buscarArchivosImagen(new File(rutaSeleccionada));
+
+    DefaultTableModel modelImagen = (DefaultTableModel) jTable1.getModel();
+    modelImagen.setRowCount(0); 
+    
+      for (File archivo : archivosImagen) {
+        String nombreArchivo = archivo.getName();
+        String rutaArchivo = archivo.getAbsolutePath();
+
+        // Añadir el archivo a la tabla con su nombre y ruta
+        modelImagen.addRow(new Object[]{nombreArchivo, rutaArchivo});
+        }
+    }
+        public List<File> buscarArchivosImagen(File carpeta) {
+    List<File> archivosImagen = new ArrayList<>();
+    File[] archivos = carpeta.listFiles();
+
+    // Recorrer todos los archivos en la carpeta
+    if (archivos != null) {
+        for (File archivo : archivos) {
+            // Verificar si el archivo tiene una de las extensiones soportadas
+            String extension = obtenerExtension(archivo);
+            if (extension.equalsIgnoreCase("jpg") || 
+                extension.equalsIgnoreCase("jpeg") || 
+                extension.equalsIgnoreCase("png")) {
+                archivosImagen.add(archivo);
+            }
+        }
+    }
+    return archivosImagen;
+}
+
+// Método para obtener la extensión del archivo
+private String obtenerExtension(File archivo) {
+    String nombreArchivo = archivo.getName();
+    int index = nombreArchivo.lastIndexOf('.');
+    if (index > 0 && index < nombreArchivo.length() - 1) {
+        return nombreArchivo.substring(index + 1).toLowerCase();
+    }
+    return "";
+}
+
+private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {                                     
+    // Obtener la fila seleccionada
+    int filaSeleccionada = jTable1.getSelectedRow();
+    if (filaSeleccionada != -1) {
+        // Obtener la ruta del archivo de imagen desde la tabla (columna de ruta)
+        String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 1); // Columna 1 es la ruta
+
+        // Mostrar la imagen en el JLabel
+        mostrarImagenEnLabel(rutaArchivo);
+    }
+}
+    private void mostrarImagenEnLabel(String rutaArchivo) {
+    // Cargar la imagen desde la ruta
+    ImageIcon iconoImagen = new ImageIcon(rutaArchivo);
+    
+    // Escalar la imagen al tamaño del JLabel
+    Image imagen = iconoImagen.getImage().getScaledInstance(jLabel2.getWidth(), jLabel2.getHeight(), Image.SCALE_SMOOTH);
+    
+    // Establecer la imagen en el JLabel
+    jLabel2.setIcon(new ImageIcon(imagen));
+        }
+
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Interfaz a= new Interfaz();
+        Interfaz a= new Interfaz(rutaSeleccionada);
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -202,10 +313,13 @@ public class Imagenes extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPopupMenu jPopupMenu1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JMenuItem mover;
     // End of variables declaration//GEN-END:variables
