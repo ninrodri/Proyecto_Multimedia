@@ -225,6 +225,7 @@ public class Analisis extends javax.swing.JFrame {
     return tamImagenes;
 }
      
+     
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -507,7 +508,7 @@ public class Analisis extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void inicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inicioActionPerformed
-        Interfaz a = new Interfaz();
+        Interfaz a = new Interfaz(rutaSeleccionada);
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_inicioActionPerformed
