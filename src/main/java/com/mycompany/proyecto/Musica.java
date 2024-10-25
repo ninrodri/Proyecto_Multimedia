@@ -12,6 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.File;
 
 /**
  *
@@ -22,15 +23,16 @@ import java.util.List;
 public class Musica extends javax.swing.JFrame {
     
      private String rutaSeleccionada;
+
     
     /**
      * Creates new form Musica
      */
     
     public Musica(String ruta) {
-         this.rutaSeleccionada = ruta;
+         initComponents();
          this.setLocationRelativeTo(null);
-        initComponents();  // Inicializar los componentes de la interfaz
+         this.rutaSeleccionada = ruta;
          mostrarArchivosMusica();// Método para cargar los archivos
     }
     
@@ -308,7 +310,7 @@ private String obtenerExtension(File archivo) {
 }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       Interfaz a = new Interfaz();
+       Interfaz a = new Interfaz(rutaSeleccionada);
        a.setVisible(true);
        this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -334,7 +336,7 @@ private String obtenerExtension(File archivo) {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jButton7ActionPerformed
 
     /**
