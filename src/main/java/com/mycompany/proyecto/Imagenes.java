@@ -9,6 +9,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -20,12 +22,20 @@ public class Imagenes extends javax.swing.JFrame {
     private String rutaSeleccionada;
     /**
      * Creates new form Imagenes
+     * @param ruta
      */
     public Imagenes(String ruta) {
         initComponents();
         this.setLocationRelativeTo(null);
         this.rutaSeleccionada= ruta;
         mostrarimagen();
+        jLabel2.setPreferredSize(new java.awt.Dimension(500, 150));
+        
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mostrarSeleccion(); 
+            }
+        });
     }
     
     public Imagenes() {
@@ -54,14 +64,25 @@ public class Imagenes extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jPanel4 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
 
         mover.setText("Mover");
+        mover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moverActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(mover);
 
         eliminar.setText("Eliminar");
+        eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(eliminar);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -87,11 +108,11 @@ public class Imagenes extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(97, 97, 97)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(126, 126, 126)
                 .addComponent(jButton1)
-                .addGap(31, 31, 31))
+                .addGap(38, 38, 38))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,12 +142,12 @@ public class Imagenes extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(66, 66, 66)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jButton3)
-                .addGap(25, 25, 25))
+                .addGap(41, 41, 41))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -141,8 +162,7 @@ public class Imagenes extends javax.swing.JFrame {
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
         jPanel3.setComponentPopupMenu(jPopupMenu1);
-
-        jLabel2.setText("Imagenes");
+        jPanel3.setPreferredSize(new java.awt.Dimension(600, 300));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -155,27 +175,40 @@ public class Imagenes extends javax.swing.JFrame {
                 "Nombre", "Ruta"
             }
         ));
+        jTable1.setComponentPopupMenu(jPopupMenu1);
         jScrollPane1.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(49, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -184,7 +217,7 @@ public class Imagenes extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -193,12 +226,28 @@ public class Imagenes extends javax.swing.JFrame {
                 .addGap(0, 0, 0)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void mostrarSeleccion() {
+        int filaSeleccionada = jTable1.getSelectedRow(); 
+        if (filaSeleccionada != -1) {
+            String rutaImagen = (String) jTable1.getValueAt(filaSeleccionada, 1); 
+            File archivoImagen = new File(rutaImagen);
+            if (archivoImagen.exists()) {
+                ImageIcon icono = new ImageIcon(rutaImagen);
+                // Escalar la imagen al tamaño del JLabel
+                 Image imagen = icono.getImage().getScaledInstance(jLabel2.getPreferredSize().width, jLabel2.getPreferredSize().height, Image.SCALE_SMOOTH);
+                jLabel2.setIcon(new ImageIcon(imagen));
+            } else {
+                JOptionPane.showMessageDialog(this, "La imagen no existe en la ruta especificada.");
+            }
+        }
+    }
+    
     private void mostrarimagen(){
     
     List<File> archivosImagen = buscarArchivosImagen(new File(rutaSeleccionada));
@@ -209,10 +258,10 @@ public class Imagenes extends javax.swing.JFrame {
       for (File archivo : archivosImagen) {
         String nombreArchivo = archivo.getName();
         String rutaArchivo = archivo.getAbsolutePath();
-
-        // Añadir el archivo a la tabla con su nombre y ruta
+   
         modelImagen.addRow(new Object[]{nombreArchivo, rutaArchivo});
-        }
+        
+      }
     }
         public List<File> buscarArchivosImagen(File carpeta) {
     List<File> archivosImagen = new ArrayList<>();
@@ -243,35 +292,74 @@ private String obtenerExtension(File archivo) {
     return "";
 }
 
-private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {                                     
-    // Obtener la fila seleccionada
-    int filaSeleccionada = jTable1.getSelectedRow();
-    if (filaSeleccionada != -1) {
-        // Obtener la ruta del archivo de imagen desde la tabla (columna de ruta)
-        String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 1); // Columna 1 es la ruta
-
-        // Mostrar la imagen en el JLabel
-        mostrarImagenEnLabel(rutaArchivo);
-    }
-}
-    private void mostrarImagenEnLabel(String rutaArchivo) {
-    // Cargar la imagen desde la ruta
-    ImageIcon iconoImagen = new ImageIcon(rutaArchivo);
-    
-    // Escalar la imagen al tamaño del JLabel
-    Image imagen = iconoImagen.getImage().getScaledInstance(jLabel2.getWidth(), jLabel2.getHeight(), Image.SCALE_SMOOTH);
-    
-    // Establecer la imagen en el JLabel
-    jLabel2.setIcon(new ImageIcon(imagen));
-        }
-
-    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Interfaz a= new Interfaz(rutaSeleccionada);
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void moverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moverActionPerformed
+         moverArchivo();
+    }//GEN-LAST:event_moverActionPerformed
+
+    private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
+       eliminarArchivo();
+    }//GEN-LAST:event_eliminarActionPerformed
+
+    
+    private void eliminarArchivo() {
+    int filaSeleccionada = jTable1.getSelectedRow();
+    if (filaSeleccionada != -1) {
+        String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 1); 
+        File archivo = new File(rutaArchivo);
+        if (!archivo.exists()) {
+            JOptionPane.showMessageDialog(this, "El archivo no existe");
+            return;
+            }  int confirmacion = JOptionPane.showConfirmDialog(this, "Desea eliminar el archivo", "", JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            if (archivo.delete()) {
+                JOptionPane.showMessageDialog(this, "Archivo eliminado");
+                ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada);
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar el archivo");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "No hay archivo seleccionado");
+        }
+    }
+    
+       private void moverArchivo() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 1); // Obtener la ruta del archivo
+            File archivo = new File(rutaArchivo);
+            
+              if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+                return;
+            }
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int seleccion = fileChooser.showOpenDialog(this);
+
+            if (seleccion == JFileChooser.APPROVE_OPTION) {
+                File carpetaDestino = fileChooser.getSelectedFile(); 
+                File archivoDestino = new File(carpetaDestino, archivo.getName());
+
+               if (archivo.renameTo(archivoDestino)) { 
+                    JOptionPane.showMessageDialog(this, "Archivo movido");
+                    ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada); // Eliminar la fila del JTable
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo mover el archivo");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningún archivo.");
+        }
+    } 
+    
     /**
      * @param args the command line arguments
      */
@@ -317,10 +405,13 @@ private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JMenuItem mover;
     // End of variables declaration//GEN-END:variables
+
+   
 }
