@@ -192,20 +192,24 @@ import javax.swing.JFileChooser;
     }//GEN-LAST:event_analisisActionPerformed
 
     private void videoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_videoActionPerformed
-        Videos c = new Videos();
-        c.setVisible(true);
-        this.setVisible(false);
+        if (rutaSeleccionada != null && !rutaSeleccionada.isEmpty()) {
+            Videos b = new Videos(rutaSeleccionada); 
+            b.setVisible(true);
+            this.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(null, "Seleccione una ruta");
+          
+        }
     }//GEN-LAST:event_videoActionPerformed
 
     private void imagenesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imagenesActionPerformed
        if(rutaSeleccionada != null && !rutaSeleccionada.isEmpty()){
          Imagenes d= new Imagenes(rutaSeleccionada);
-       
         d.setVisible(true);
         this.setVisible(false);
        } else {
        JOptionPane.showMessageDialog(null, "Seleccione una ruta");
-       }
+}
     }//GEN-LAST:event_imagenesActionPerformed
 
     
