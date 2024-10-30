@@ -4,6 +4,7 @@
  */
 package com.mycompany.proyecto;
 
+import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import javax.swing.table.DefaultTableModel;
 public class Imagenes extends javax.swing.JFrame {
 
     private String rutaSeleccionada;
+    private List<File> archivosImagen;
     /**
      * Creates new form Imagenes
      * @param ruta
@@ -36,6 +38,18 @@ public class Imagenes extends javax.swing.JFrame {
                 mostrarSeleccion(); 
             }
         });
+        
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buscarImagen(); // Llamada al método de búsqueda al hacer clic en el botón
+            }
+        });
+        
+         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                mostrarSeleccion();
+            }
+         });
     }
     
     public Imagenes() {
@@ -108,11 +122,11 @@ public class Imagenes extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(253, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(126, 126, 126)
+                .addGap(132, 132, 132)
                 .addComponent(jButton1)
-                .addGap(38, 38, 38))
+                .addGap(32, 32, 32))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,11 +141,24 @@ public class Imagenes extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
         jTextField1.setBackground(new java.awt.Color(204, 204, 204));
-        jTextField1.setText("Que desea buscar");
+        jTextField1.setText("Que imagen desea ver");
         jTextField1.setPreferredSize(new java.awt.Dimension(130, 22));
+        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jTextField1FocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jTextField1FocusLost(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(255, 255, 102));
         jButton2.setText("Buscar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton3.setBackground(new java.awt.Color(255, 255, 102));
         jButton3.setText("Ordenar");
@@ -143,11 +170,11 @@ public class Imagenes extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 314, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
                 .addComponent(jButton2)
-                .addGap(18, 18, 18)
+                .addGap(32, 32, 32)
                 .addComponent(jButton3)
-                .addGap(41, 41, 41))
+                .addGap(27, 27, 27))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,10 +223,10 @@ public class Imagenes extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(43, 43, 43)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addContainerGap(56, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 581, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -217,7 +244,7 @@ public class Imagenes extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,37 +277,48 @@ public class Imagenes extends javax.swing.JFrame {
     
     private void mostrarimagen(){
     
-    List<File> archivosImagen = buscarArchivosImagen(new File(rutaSeleccionada));
-
-    DefaultTableModel modelImagen = (DefaultTableModel) jTable1.getModel();
-    modelImagen.setRowCount(0); 
-    
-      for (File archivo : archivosImagen) {
-        String nombreArchivo = archivo.getName();
-        String rutaArchivo = archivo.getAbsolutePath();
-   
-        modelImagen.addRow(new Object[]{nombreArchivo, rutaArchivo});
-        
-      }
+   archivosImagen = buscarArchivosImagen(new File(rutaSeleccionada));
+        actualizarTabla(archivosImagen); // Actualiza la tabla con todos los archivos
     }
-        public List<File> buscarArchivosImagen(File carpeta) {
-    List<File> archivosImagen = new ArrayList<>();
-    File[] archivos = carpeta.listFiles();
 
-    // Recorrer todos los archivos en la carpeta
-    if (archivos != null) {
-        for (File archivo : archivos) {
-            // Verificar si el archivo tiene una de las extensiones soportadas
-            String extension = obtenerExtension(archivo);
-            if (extension.equalsIgnoreCase("jpg") || 
-                extension.equalsIgnoreCase("jpeg") || 
-                extension.equalsIgnoreCase("png")) {
-                archivosImagen.add(archivo);
+    private List<File> buscarArchivosImagen(File carpeta) {
+        List<File> archivosImagen = new ArrayList<>();
+        File[] archivos = carpeta.listFiles();
+        
+        if (archivos != null) {
+            for (File archivo : archivos) {
+                String extension = obtenerExtension(archivo);
+                if (extension.equalsIgnoreCase("jpg") || 
+                    extension.equalsIgnoreCase("jpeg") || 
+                    extension.equalsIgnoreCase("png")) {
+                    archivosImagen.add(archivo);
+                }
             }
         }
+        return archivosImagen;
     }
-    return archivosImagen;
-}
+    
+          private void buscarImagen() {
+        String textoBusqueda = jTextField1.getText().trim().toLowerCase();
+        List<File> resultados = new ArrayList<>();
+        
+        for (File archivo : archivosImagen) {
+            if (archivo.getName().toLowerCase().contains(textoBusqueda)) {
+                resultados.add(archivo);
+            }
+        }
+        
+        actualizarTabla(resultados); // Actualiza la tabla con los resultados de la búsqueda
+    }
+          
+        private void actualizarTabla(List<File> archivos) {
+        DefaultTableModel modelImagen = (DefaultTableModel) jTable1.getModel();
+        modelImagen.setRowCount(0);
+        
+        for (File archivo : archivos) {
+            modelImagen.addRow(new Object[]{archivo.getName(), archivo.getAbsolutePath()});
+        }
+    }
 
 // Método para obtener la extensión del archivo
 private String obtenerExtension(File archivo) {
@@ -305,6 +343,26 @@ private String obtenerExtension(File archivo) {
     private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
        eliminarArchivo();
     }//GEN-LAST:event_eliminarActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField1FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusGained
+        if(jTextField1.getText().equals("Que imagen desea ver")){
+
+            jTextField1.setText("");
+            jTextField1.setForeground(new Color(153,153,153));
+        }
+    }//GEN-LAST:event_jTextField1FocusGained
+
+    private void jTextField1FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jTextField1FocusLost
+        if(jTextField1.getText().equals("Que imagen desea ver")){
+
+            jTextField1.setText("");
+            jTextField1.setForeground(new Color(153,153,153));
+        }
+    }//GEN-LAST:event_jTextField1FocusLost
 
     
     private void eliminarArchivo() {
