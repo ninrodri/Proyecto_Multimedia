@@ -56,7 +56,7 @@ public class Videos extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu2 = new javax.swing.JPopupMenu();
+        jPopupMenu1 = new javax.swing.JPopupMenu();
         mover = new javax.swing.JMenuItem();
         eliminar = new javax.swing.JMenuItem();
         jPanel2 = new javax.swing.JPanel();
@@ -77,10 +77,20 @@ public class Videos extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
 
         mover.setText("Mover");
-        jPopupMenu2.add(mover);
+        mover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moverActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(mover);
 
         eliminar.setText("Eliminar");
-        jPopupMenu2.add(eliminar);
+        eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(eliminar);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(600, 461));
@@ -213,6 +223,7 @@ public class Videos extends javax.swing.JFrame {
                 "Nombre", "Ruta"
             }
         ));
+        jTable1.setComponentPopupMenu(jPopupMenu1);
         jScrollPane1.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -223,7 +234,7 @@ public class Videos extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(118, 118, 118)
+                .addGap(177, 177, 177)
                 .addComponent(jButton3)
                 .addGap(40, 40, 40))
             .addGroup(jPanel2Layout.createSequentialGroup()
@@ -338,6 +349,59 @@ public class Videos extends javax.swing.JFrame {
     }
     }
     
+     private void eliminarArchivo() {
+    int filaSeleccionada = jTable1.getSelectedRow();
+    if (filaSeleccionada != -1) {
+        String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 1); 
+        File archivo = new File(rutaArchivo);
+        if (!archivo.exists()) {
+            JOptionPane.showMessageDialog(this, "El archivo no existe");
+            return;
+            }  int confirmacion = JOptionPane.showConfirmDialog(this, "Desea eliminar el archivo", "", JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            if (archivo.delete()) {
+                JOptionPane.showMessageDialog(this, "Archivo eliminado");
+                ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada);
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar el archivo");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "No hay archivo seleccionado");
+        }
+    }
+    
+       private void moverArchivo() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 1); // Obtener la ruta del archivo
+            File archivo = new File(rutaArchivo);
+            
+              if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+                return;
+            }
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int seleccion = fileChooser.showOpenDialog(this);
+
+            if (seleccion == JFileChooser.APPROVE_OPTION) {
+                File carpetaDestino = fileChooser.getSelectedFile(); 
+                File archivoDestino = new File(carpetaDestino, archivo.getName());
+
+               if (archivo.renameTo(archivoDestino)) { 
+                    JOptionPane.showMessageDialog(this, "Archivo movido");
+                    ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada); // Eliminar la fila del JTable
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo mover el archivo");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningún archivo.");
+        }
+    } 
+    
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         Interfaz a = new Interfaz(rutaSeleccionada);
         a.setVisible(true);
@@ -348,7 +412,7 @@ public class Videos extends javax.swing.JFrame {
            if(jTextField2.getText().equals("Que video desea ver")){
 
             jTextField2.setText("");
-            jTextField2.setForeground(new Color(153,153,153));
+            jTextField2.setForeground(new Color(0,0,139));
         }
     }//GEN-LAST:event_jTextField2FocusGained
 
@@ -375,9 +439,18 @@ public class Videos extends javax.swing.JFrame {
         if(jTextField2.getText().equals("Que video desea ver")){
 
             jTextField2.setText("");
-            jTextField2.setForeground(new Color(153,153,153));
+            jTextField2.setForeground(new Color(0,0,139));
         }
     }//GEN-LAST:event_jTextField2FocusLost
+
+    
+    private void moverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moverActionPerformed
+        moverArchivo();
+    }//GEN-LAST:event_moverActionPerformed
+
+    private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
+       eliminarArchivo();
+    }//GEN-LAST:event_eliminarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -428,7 +501,7 @@ public class Videos extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPopupMenu jPopupMenu2;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
