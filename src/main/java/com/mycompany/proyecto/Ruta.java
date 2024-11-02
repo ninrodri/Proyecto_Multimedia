@@ -10,14 +10,14 @@ package com.mycompany.proyecto;
  */
 public class Ruta {
     
-    private static String rutaSeleccionada;
+    private static String seleccion;
 
-    public static void setRutaSeleccionada(String ruta) {
-        rutaSeleccionada = ruta;
+    public static void setseleccion(String ruta) {
+        seleccion = ruta;
     }
 
-    public static String getRutaSeleccionada() {
-        return rutaSeleccionada;
+    public static String getseleccion() {
+        return seleccion;
     }
     
 }
