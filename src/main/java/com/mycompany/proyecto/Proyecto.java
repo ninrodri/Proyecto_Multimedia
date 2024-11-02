@@ -13,7 +13,7 @@ public class Proyecto {
     public static void main(String[] args) {
         
         Busqueda a= new Busqueda();
-        a.show();
+        a.setVisible(true);
         
     }
 }
