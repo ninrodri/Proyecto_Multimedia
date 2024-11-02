@@ -17,10 +17,10 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Archidupli extends javax.swing.JFrame {
     
-     private String rutaSeleccionada;
+     private String seleccion;
 
     public Archidupli(String ruta) {
-        this.rutaSeleccionada = ruta;
+        this.seleccion = ruta;
         initComponents();
         this.setLocationRelativeTo(null);
         mostrarArchivosDuplicados();
@@ -164,7 +164,7 @@ public class Archidupli extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
          private void mostrarArchivosDuplicados() {
-        List<File[]> archivosDuplicados = buscarArchivosDuplicados(new File(rutaSeleccionada));
+        List<File[]> archivosDuplicados = buscarArchivosDuplicados(new File(seleccion));
 
         
         DefaultTableModel modelDuplicados = (DefaultTableModel) jTable1.getModel();
@@ -223,7 +223,7 @@ public class Archidupli extends javax.swing.JFrame {
     }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String ruta = Ruta.getRutaSeleccionada();
+        String ruta = Ruta.getseleccion();
         if (ruta != null) {
             Analisis a = new Analisis(ruta);  
             a.setVisible(true);
@@ -281,9 +281,9 @@ public class Archidupli extends javax.swing.JFrame {
 
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int seleccion = fileChooser.showOpenDialog(this);
+            int selec = fileChooser.showOpenDialog(this);
 
-            if (seleccion == JFileChooser.APPROVE_OPTION) {
+            if (selec == JFileChooser.APPROVE_OPTION) {
                 File carpetaDestino = fileChooser.getSelectedFile(); 
                 File archivoDestino = new File(carpetaDestino, archivo.getName());
 
