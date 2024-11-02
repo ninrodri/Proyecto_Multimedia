@@ -113,18 +113,18 @@ public class Busqueda extends javax.swing.JFrame {
     if (resultado == JFileChooser.APPROVE_OPTION) {
         File carpetaSeleccionada = fileChooser.getSelectedFile();
         
-        String rutaSeleccionada = carpetaSeleccionada.getAbsolutePath();
+        String seleccion = carpetaSeleccionada.getAbsolutePath();
         
-        Ruta.setRutaSeleccionada(rutaSeleccionada);
+        Ruta.setseleccion(seleccion);
         
         JOptionPane.showMessageDialog(null, "Ruta seleccionada.");
         
-        Interfaz a = new Interfaz(rutaSeleccionada); 
+        Interfaz a = new Interfaz(seleccion); 
         a.setVisible(true);
-        this.dispose();
+        this.setVisible(false);
         }
         else {
-            JOptionPane.showMessageDialog(null, "Seleccione una carpeta válida.");
+            JOptionPane.showMessageDialog(null, "Seleccione una carpeta valida.");
         }
     
     }//GEN-LAST:event_jButton1ActionPerformed
