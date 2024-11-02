@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Analisis extends javax.swing.JFrame {
 
-    private String rutaSeleccionada;
+    private String seleccion;
    
     /**
      * Creates new form Analisis
@@ -24,25 +24,27 @@ public class Analisis extends javax.swing.JFrame {
     public Analisis(String ruta) {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.rutaSeleccionada=ruta;
+        this.seleccion=ruta;
+        
+        //metodos tamaños
        
-        double tamcarpeta = calculartamcarpeta(new File(rutaSeleccionada));
+        double tamcarpeta = calculartamcarpeta(new File(seleccion));
         double tamcarpetaGB = (double) tamcarpeta / (1024 * 1024 * 1024);  
         jLabel11.setText(String.format ("%.2f GB Utilizados",+tamcarpetaGB));
         
-        double tammusica = calculartammusica(new File(rutaSeleccionada));
+        double tammusica = calculartammusica(new File(seleccion));
         double tammusicaGB = tammusica / (1024 * 1024 * 1024); 
         jLabel3.setText(String.format("%.2f GB Utilizados", tammusicaGB));
         
-        double tamvideo = calculartamvideo(new File(rutaSeleccionada));
+        double tamvideo = calculartamvideo(new File(seleccion));
         double tamvideoGB = tamvideo / (1024 * 1024 * 1024);
         jLabel12.setText(String.format("%.2f GB Utilizados", tamvideoGB));
    
-        double tamImagenes = calcularTamImagenes(new File(rutaSeleccionada));
+        double tamImagenes = calcularTamImagenes(new File(seleccion));
         double tamImagenesGB = tamImagenes / (1024 * 1024 * 1024);  
         jLabel13.setText(String.format("%.2f GB Utilizados", tamImagenesGB));
     
-                List<File[]> archivosDuplicados = buscarArchivosDuplicados(new File(rutaSeleccionada));
+                List<File[]> archivosDuplicados = buscarArchivosDuplicados(new File(seleccion));
 
         // Crear el modelo de la tabla
         DefaultTableModel modelDuplicados = (DefaultTableModel) jTable3.getModel();
@@ -63,7 +65,7 @@ public class Analisis extends javax.swing.JFrame {
             modelDuplicados.addRow(new Object[]{nombreArchivo2, tamanoArchivo2, rutaArchivo2});
         }
         
-        List<File> archivosMasPesados = buscarArchivosMasPesados(new File(rutaSeleccionada));
+        List<File> archivosMasPesados = buscarArchivosMasPesados(new File(seleccion));
         DefaultTableModel modelPesados = (DefaultTableModel) jTable2.getModel();
         modelPesados.setRowCount(0); // Limpiar filas existentes
 
@@ -101,17 +103,7 @@ public class Analisis extends javax.swing.JFrame {
         return duplicados;
     }
     
-    public String obtenerExtension(File archivo) {
-        String nombre = archivo.getName();
-        int indicePunto = nombre.lastIndexOf('.');
-        if (indicePunto > 0 && indicePunto < nombre.length() - 1) {
-            return nombre.substring(indicePunto + 1).toLowerCase(); 
-        }
-        return "";
-    }
-
-    
-    public List<File> buscarArchivosMasPesados(File carpeta) {
+       public List<File> buscarArchivosMasPesados(File carpeta) {
         List<File> archivosMasPesados = new ArrayList<>(); 
         File[] archivos = carpeta.listFiles(); // Lista de archivos en la carpeta
 
@@ -144,6 +136,16 @@ public class Analisis extends javax.swing.JFrame {
 
         return archivosMasPesados;
     }
+    
+    public String obtenerExtension(File archivo) {
+        String nombre = archivo.getName();
+        int indicePunto = nombre.lastIndexOf('.');
+        if (indicePunto > 0 && indicePunto < nombre.length() - 1) {
+            return nombre.substring(indicePunto + 1).toLowerCase(); 
+        }
+        return "";
+    }
+
     
     
     public final double calculartamcarpeta(File carpeta) {
@@ -246,15 +248,13 @@ public class Analisis extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        duplicados = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
+        grandes = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable2 = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
@@ -267,19 +267,19 @@ public class Analisis extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(51, 51, 51));
 
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Almacenamiento");
+        jLabel2.setText("Almacenamiento Total");
 
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("Imagenes");
+        jLabel4.setText("Almacenamiento de Imagenes");
 
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel5.setText("Video");
+        jLabel5.setText("Almacenamiento de Video");
 
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Musica");
 
         jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText("Musica");
+        jLabel6.setText("Almacenamiento de Musica");
 
         jLabel11.setForeground(new java.awt.Color(255, 255, 255));
         jLabel11.setText("Total");
@@ -297,10 +297,11 @@ public class Analisis extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -312,25 +313,19 @@ public class Analisis extends javax.swing.JFrame {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(21, 21, 21)
-                        .addComponent(jLabel2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(29, 29, 29)
-                        .addComponent(jLabel11)))
+                .addGap(40, 40, 40)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel11))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
                     .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addGap(24, 24, 24))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addGap(18, 18, 18)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel12))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel13))
@@ -339,14 +334,11 @@ public class Analisis extends javax.swing.JFrame {
 
         jPanel2.setBackground(new java.awt.Color(51, 51, 51));
 
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("GB Utilizados");
-
-        jButton2.setBackground(new java.awt.Color(255, 255, 102));
-        jButton2.setText("Ver mas");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        duplicados.setBackground(new java.awt.Color(255, 255, 102));
+        duplicados.setText("Ver mas");
+        duplicados.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                duplicadosActionPerformed(evt);
             }
         });
 
@@ -378,10 +370,8 @@ public class Analisis extends javax.swing.JFrame {
                         .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(41, 41, 41)
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addComponent(duplicados)
                         .addGap(15, 15, 15))))
         );
         jPanel2Layout.setVerticalGroup(
@@ -389,8 +379,7 @@ public class Analisis extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8)
-                    .addComponent(jButton2)
+                    .addComponent(duplicados)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -402,14 +391,11 @@ public class Analisis extends javax.swing.JFrame {
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("Archivos Grandes");
 
-        jLabel10.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel10.setText("GB Utilizados");
-
-        jButton3.setBackground(new java.awt.Color(255, 255, 102));
-        jButton3.setText("Ver mas");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        grandes.setBackground(new java.awt.Color(255, 255, 102));
+        grandes.setText("Ver mas");
+        grandes.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                grandesActionPerformed(evt);
             }
         });
 
@@ -433,13 +419,11 @@ public class Analisis extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton3)
+                .addComponent(grandes)
                 .addGap(20, 20, 20))
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 594, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -447,10 +431,8 @@ public class Analisis extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel9)
-                        .addComponent(jLabel10))
-                    .addComponent(jButton3))
+                    .addComponent(jLabel9)
+                    .addComponent(grandes))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28))
@@ -508,22 +490,22 @@ public class Analisis extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void inicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inicioActionPerformed
-        Interfaz a = new Interfaz(rutaSeleccionada);
+        Interfaz a = new Interfaz(seleccion);
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_inicioActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        Archidupli b= new Archidupli(rutaSeleccionada);
+    private void duplicadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_duplicadosActionPerformed
+        Archidupli b= new Archidupli(seleccion);
         b.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }//GEN-LAST:event_duplicadosActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Archigrandes c= new Archigrandes(rutaSeleccionada);
+    private void grandesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_grandesActionPerformed
+        Archigrandes c= new Archigrandes(seleccion);
         c.setVisible(true);
         this.setVisible(false);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_grandesActionPerformed
 
      
      
@@ -558,7 +540,7 @@ public class Analisis extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               String ruta = Ruta.getRutaSeleccionada();
+               String ruta = Ruta.getseleccion();
                 if (ruta != null) {
                     new Analisis(ruta).setVisible(true);
                 } else {
@@ -569,11 +551,10 @@ public class Analisis extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton duplicados;
+    private javax.swing.JButton grandes;
     private javax.swing.JButton inicio;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
@@ -583,7 +564,6 @@ public class Analisis extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
