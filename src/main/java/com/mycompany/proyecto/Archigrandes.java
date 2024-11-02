@@ -18,13 +18,13 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Archigrandes extends javax.swing.JFrame {
 
-    private String rutaSeleccionada;
+    private String seleccion;
     /**
      * Creates new form Archigrandes
      */
     public Archigrandes(String ruta) {
         initComponents();
-        this.rutaSeleccionada= ruta;
+        this.seleccion= ruta;
         this.setLocationRelativeTo(null);
         mostrarArchigrandes();
     }
@@ -167,7 +167,7 @@ public class Archigrandes extends javax.swing.JFrame {
     
      private void mostrarArchigrandes() {
         
-        List<File> archigrandes = buscararchigrandes(new File(rutaSeleccionada));
+        List<File> archigrandes = buscararchigrandes(new File(seleccion));
 
      
         DefaultTableModel modelGrandes = (DefaultTableModel) jTable1.getModel();
@@ -250,9 +250,9 @@ public class Archigrandes extends javax.swing.JFrame {
           
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int seleccion = fileChooser.showOpenDialog(this);
+            int selec = fileChooser.showOpenDialog(this);
 
-            if (seleccion == JFileChooser.APPROVE_OPTION) {
+            if (selec == JFileChooser.APPROVE_OPTION) {
                 File carpetaDestino = fileChooser.getSelectedFile(); 
                 File archivoDestino = new File(carpetaDestino, archivo.getName());
 
@@ -269,7 +269,7 @@ public class Archigrandes extends javax.swing.JFrame {
     }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Analisis a= new Analisis(rutaSeleccionada);
+        Analisis a= new Analisis(seleccion);
         a.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
