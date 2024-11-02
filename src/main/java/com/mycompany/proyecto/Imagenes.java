@@ -188,8 +188,9 @@ public class Imagenes extends javax.swing.JFrame {
         );
 
         jPanel3.setBackground(new java.awt.Color(51, 51, 51));
-        jPanel3.setComponentPopupMenu(jPopupMenu1);
         jPanel3.setPreferredSize(new java.awt.Dimension(600, 300));
+
+        jScrollPane1.setComponentPopupMenu(jPopupMenu1);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -352,7 +353,7 @@ private String obtenerExtension(File archivo) {
         if(jTextField1.getText().equals("Que imagen desea ver")){
 
             jTextField1.setText("");
-            jTextField1.setForeground(new Color(153,153,153));
+            jTextField1.setForeground(new Color(0,0,139));
         }
     }//GEN-LAST:event_jTextField1FocusGained
 
@@ -360,7 +361,7 @@ private String obtenerExtension(File archivo) {
         if(jTextField1.getText().equals("Que imagen desea ver")){
 
             jTextField1.setText("");
-            jTextField1.setForeground(new Color(153,153,153));
+            jTextField1.setForeground(new Color(0,0,139));
         }
     }//GEN-LAST:event_jTextField1FocusLost
 
