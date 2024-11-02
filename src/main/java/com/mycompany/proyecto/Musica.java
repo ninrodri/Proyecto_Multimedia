@@ -22,6 +22,7 @@ import javax.swing.*;
 public class Musica extends javax.swing.JFrame {
     
      private String rutaSeleccionada;
+      private List<File> archivosdeMusica;
     private EmbeddedMediaPlayerComponent mediaPlayerComponent;
     
     /**
@@ -55,6 +56,9 @@ public class Musica extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        mover = new javax.swing.JMenuItem();
+        eliminar = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
@@ -72,6 +76,22 @@ public class Musica extends javax.swing.JFrame {
         jButton8 = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jLabel3 = new javax.swing.JLabel();
+
+        mover.setText("Mover");
+        mover.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                moverActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(mover);
+
+        eliminar.setText("Eliminar");
+        eliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                eliminarActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(eliminar);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -132,6 +152,11 @@ public class Musica extends javax.swing.JFrame {
 
         jButton2.setBackground(new java.awt.Color(255, 255, 102));
         jButton2.setText("Buscar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jButton4.setBackground(new java.awt.Color(255, 255, 102));
         jButton4.setText("Ordenar");
@@ -150,6 +175,7 @@ public class Musica extends javax.swing.JFrame {
                 "Nombre", "Ruta"
             }
         ));
+        jTable1.setComponentPopupMenu(jPopupMenu1);
         jScrollPane3.setViewportView(jTable1);
 
         jButton5.setText("Previus");
@@ -264,8 +290,8 @@ public class Musica extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void mostrarArchivosMusica() {
-        List<File> archivos = buscarArchivosDeMusica(new File(rutaSeleccionada)); // Modificado para pasar la ruta
-        actualizarTabla(archivos);
+        archivosdeMusica = buscarArchivosDeMusica(new File(rutaSeleccionada)); // Modificado para pasar la ruta
+        actualizarTabla(archivosdeMusica);
     }
   
     private void actualizarTabla(List<File> archivos) {
@@ -318,6 +344,20 @@ public class Musica extends javax.swing.JFrame {
         return archivosDeMusica;
     }
     
+   private void buscarArchivo() {
+      String textoBusqueda = jTextField1.getText().trim().toLowerCase();
+        List<File> resultados = new ArrayList<>();
+        
+        for (File archivo : archivosdeMusica) {
+            if (archivo.getName().toLowerCase().contains(textoBusqueda)) {
+                resultados.add(archivo);
+            }
+        }
+        
+        actualizarTabla(resultados); // Actualiza la tabla con los resultados de la búsqueda
+    }
+      
+      
          private String obtenerExtension(File archivo) {
         String nombreArchivo = archivo.getName();
         int index = nombreArchivo.lastIndexOf('.');
@@ -326,6 +366,60 @@ public class Musica extends javax.swing.JFrame {
         }
         return "";
     }
+         
+         private void eliminarArchivo() {
+    int filaSeleccionada = jTable1.getSelectedRow();
+    if (filaSeleccionada != -1) {
+        String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 1); 
+        File archivo = new File(rutaArchivo);
+        if (!archivo.exists()) {
+            JOptionPane.showMessageDialog(this, "El archivo no existe");
+            return;
+            }  int confirmacion = JOptionPane.showConfirmDialog(this, "Desea eliminar el archivo", "", JOptionPane.YES_NO_OPTION);
+        if (confirmacion == JOptionPane.YES_OPTION) {
+            if (archivo.delete()) {
+                JOptionPane.showMessageDialog(this, "Archivo eliminado");
+                ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada);
+            } else {
+                JOptionPane.showMessageDialog(this, "No se pudo eliminar el archivo");
+            }
+        }
+    } else {
+        JOptionPane.showMessageDialog(this, "No hay archivo seleccionado");
+        }
+    }
+    
+       private void moverArchivo() {
+        int filaSeleccionada = jTable1.getSelectedRow();
+        if (filaSeleccionada != -1) {
+            String rutaArchivo = (String) jTable1.getValueAt(filaSeleccionada, 1); // Obtener la ruta del archivo
+            File archivo = new File(rutaArchivo);
+            
+              if (!archivo.exists()) {
+                JOptionPane.showMessageDialog(this, "El archivo no existe");
+                return;
+            }
+
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            int seleccion = fileChooser.showOpenDialog(this);
+
+            if (seleccion == JFileChooser.APPROVE_OPTION) {
+                File carpetaDestino = fileChooser.getSelectedFile(); 
+                File archivoDestino = new File(carpetaDestino, archivo.getName());
+
+               if (archivo.renameTo(archivoDestino)) { 
+                    JOptionPane.showMessageDialog(this, "Archivo movido");
+                    ((DefaultTableModel) jTable1.getModel()).removeRow(filaSeleccionada); // Eliminar la fila del JTable
+                } else {
+                    JOptionPane.showMessageDialog(this, "No se pudo mover el archivo");
+                }
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningún archivo.");
+        }
+    } 
+    
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
        Interfaz a = new Interfaz(rutaSeleccionada);
@@ -337,7 +431,7 @@ public class Musica extends javax.swing.JFrame {
         if(jTextField1.getText().equals("Que deseea escuchar")){
 
             jTextField1.setText("");
-            jTextField1.setForeground(new Color(153,153,153));
+            jTextField1.setForeground(new Color(0,0,139));
         }
     }//GEN-LAST:event_jTextField1FocusLost
 
@@ -345,7 +439,7 @@ public class Musica extends javax.swing.JFrame {
         if(jTextField1.getText().equals("Que desea escuchar")){
 
             jTextField1.setText("");
-            jTextField1.setForeground(new Color(153,153,153));
+            jTextField1.setForeground(new Color(0,0,139));
         }
     }//GEN-LAST:event_jTextField1FocusGained
 
@@ -360,6 +454,18 @@ public class Musica extends javax.swing.JFrame {
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
          pausarMedia();
     }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void eliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eliminarActionPerformed
+        eliminarArchivo();
+    }//GEN-LAST:event_eliminarActionPerformed
+
+    private void moverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moverActionPerformed
+        moverArchivo();
+    }//GEN-LAST:event_moverActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        buscarArchivo();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -397,6 +503,7 @@ public class Musica extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem eliminar;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -410,9 +517,11 @@ public class Musica extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JMenuItem mover;
     // End of variables declaration//GEN-END:variables
 }
