@@ -5,7 +5,6 @@
  package com.mycompany.proyecto;
 
 import javax.swing.JOptionPane;
-import javax.swing.JFileChooser;
 
 /**
  *
@@ -13,22 +12,21 @@ import javax.swing.JFileChooser;
  */
     public class Interfaz extends javax.swing.JFrame {
  
-    private String rutaSeleccionada;
+    private String seleccion;
     
     
-    public void setRutaseleccionada(String ruta) {
-        this.rutaSeleccionada = ruta;}
+    public void setseleccion(String ruta) {
+        this.seleccion = ruta;}
     /**
      * Creates new form Interfaz
      */
     public Interfaz(String ruta) {
         initComponents();
         this.setLocationRelativeTo(null);
-        this.rutaSeleccionada=ruta;
+        this.seleccion=ruta;
     }
     public Interfaz() {
         initComponents();
-        this.setLocationRelativeTo(null);
     }
     
     
@@ -170,46 +168,43 @@ import javax.swing.JFileChooser;
     }// </editor-fold>//GEN-END:initComponents
 
     private void musicaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_musicaActionPerformed
-        if(rutaSeleccionada != null && !rutaSeleccionada.isEmpty()){
-        Musica a = new Musica(rutaSeleccionada);
+        if(seleccion != null && !seleccion.isEmpty()){
+        Musica a = new Musica(seleccion);
         a.setVisible(true);
         this.setVisible(false);
 }else {
       JOptionPane.showMessageDialog(null, "Seleccione una ruta");
-}
+        }
     }//GEN-LAST:event_musicaActionPerformed
 
     private void analisisActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_analisisActionPerformed
-        if (rutaSeleccionada != null && !rutaSeleccionada.isEmpty()) {
-            Analisis b = new Analisis(rutaSeleccionada); 
+        if (seleccion != null && !seleccion.isEmpty()) {
+            Analisis b = new Analisis(seleccion); 
             b.setVisible(true);
             this.setVisible(false);
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione una ruta");
-          
+} else {
+            JOptionPane.showMessageDialog(null, "Seleccione una ruta"); 
         }
-    
     }//GEN-LAST:event_analisisActionPerformed
 
     private void videoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_videoActionPerformed
-        if (rutaSeleccionada != null && !rutaSeleccionada.isEmpty()) {
-            Videos b = new Videos(rutaSeleccionada); 
+        if (seleccion != null && !seleccion.isEmpty()) {
+            Videos b = new Videos(seleccion); 
             b.setVisible(true);
             this.setVisible(false);
-        } else {
-            JOptionPane.showMessageDialog(null, "Seleccione una ruta");
-          
+} else {
+            JOptionPane.showMessageDialog(null, "Seleccione una ruta"); 
         }
     }//GEN-LAST:event_videoActionPerformed
 
     private void imagenesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_imagenesActionPerformed
-       if(rutaSeleccionada != null && !rutaSeleccionada.isEmpty()){
-         Imagenes d= new Imagenes(rutaSeleccionada);
+       if(seleccion != null && !seleccion.isEmpty()){
+         Imagenes d= new Imagenes(seleccion);
         d.setVisible(true);
         this.setVisible(false);
-       } else {
+} else {
        JOptionPane.showMessageDialog(null, "Seleccione una ruta");
-}
+        }
     }//GEN-LAST:event_imagenesActionPerformed
 
     
